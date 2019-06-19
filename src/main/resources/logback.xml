@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="net.zapotylok.todolist">
+    <logger name="com.zapotylok.todolist">
         <level value="debug"/>
     </logger>
 
