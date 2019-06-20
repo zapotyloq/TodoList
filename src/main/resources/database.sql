@@ -27,6 +27,23 @@ CREATE TABLE user_roles(
 )
     ENGINE = InnoDB;
 
+-- Table: tasks
+
+CREATE TABLE tasks(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT NOT NULL,
+
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(255),
+
+    start DATETIME,
+    due DATETIME,
+
+    status BOOLEAN
+)
+    ENGINE = InnoDB;
+
 -- Insert data
 
 INSERT INTO users VALUES(1, 'admin', '$2y$04$uL/uIQJeqIp.cOjzK0qbwudh3E3wI4cIQKQUMJEFGwFLG.UI6yY8');
