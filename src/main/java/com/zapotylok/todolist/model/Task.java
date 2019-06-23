@@ -1,5 +1,6 @@
 package com.zapotylok.todolist.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -27,19 +28,27 @@ public class Task {
 
     @Column(name = "start")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date start;
 
     @Column(name = "due")
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date due;
 
     @Column(name = "status")
     private boolean status;
 
-    @OneToMany(mappedBy = "users")
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User user;
 
     public Task() {
+    }
+
+    @PreRemove
+    private void removeTaskFromUser() {
+        user.getTasks().remove(this);
     }
 
     public Long getId() {
@@ -96,10 +105,6 @@ public class Task {
 
     public void setStatus(boolean status) {
         this.status = status;
-    }
-
-    public boolean getStatus(){
-        return status;
     }
 
     public User getUser() {

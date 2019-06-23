@@ -1,21 +1,25 @@
 package com.zapotylok.todolist.service;
 
+import java.util.List;
 import com.zapotylok.todolist.dao.TaskDao;
 import com.zapotylok.todolist.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of {@link TaskService} interface.
  */
 
 @Service
+@Transactional(readOnly = true)
 public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskDao taskDao;
 
     @Override
+    @Transactional
     public void save(Task task) {
         taskDao.save(task);
     }
@@ -26,17 +30,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void edit(Task task){
-        Task t = taskDao.findById(task.getId());
-        t.setName(task.getName());
-        t.setDescription(task.getDescription());
-        t.setStart(task.getStart());
-        t.setDue(task.getStart());
-        t.setStatus(task.getStatus());
+    @Transactional
+    public void delete(long id){
+        taskDao.delete(id);
     }
 
     @Override
-    public void delete(long id){
-        taskDao.delete(id);
+    public List<Task> findByUserId(long user_id){
+
+        return taskDao.findByUser_id(user_id);
     }
 }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 /**
  * Controller for {@link com.zapotylok.todolist.model.User}'s pages.
  */
@@ -61,11 +63,6 @@ public class UserController {
         }
 
         return "login";
-    }
-
-    @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
-    public String welcome(Model model) {
-        return "welcome";
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)

@@ -30,8 +30,46 @@
 
     </c:if>
 
+    <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>Your tasks</th>
+            <th><a href="${contextPath}/create" role="button" class="btn btn-block btn-secondary">Add new</a> </th>
+        </tr>
+            <th>Task</th>
+            <th>Description</th>
+            <th>Start</th>
+            <th>Due</th>
+            <th>Status</th>
+            <th>#</th>
+        </thead>
+        <tbody><c:forEach var="task" items="${TASKS}" varStatus="status">
+            <tr id="${task.id}" onclick="location.href='${contextPath}/change_status/${task.id}'"><td>${task.name}</td>
+                <td>${task.description}</td>
+                <td>${task.start.toString()}</td>
+                <td>${task.due.toString()}</td>
+                <td>${task.status}</td>
+                <td><a href="${contextPath}/delete/${task.id}">delete</a></td>
+            </tr>
+        </c:forEach></tbody>
+    </table>
+
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+    /*$("tr").click(function(){
+        $.get("${contextPath}/change_status/" + this.id, function(data, status){
+            //alert("Data: " + data + "\nStatus: " + status);
+        });
+    });*/
+    /*$.getJSON("/welcome", function(data) {
+        var tbody = $('.table tbody');
+        tbody.empty();
+        $.each(data, function(key, task) {
+            tbody.append("<tr><td>" + task.feedback + "</td></tr>");
+        });
+    });*/
+</script>
 <script src="${contextPath}/resources/js/bootstrap.min.js"></script>
 </body>
 </html>

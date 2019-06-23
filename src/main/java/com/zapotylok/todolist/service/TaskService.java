@@ -2,6 +2,8 @@ package com.zapotylok.todolist.service;
 
 import com.zapotylok.todolist.model.Task;
 
+import java.util.List;
+
 /**
  * Service class for {@link com.zapotylok.todolist.model.Task}
  */
@@ -12,7 +14,7 @@ public interface TaskService {
 
     Task findById(long id);
 
-    void edit(Task task);
+    List<Task> findByUserId(long user_id);
 
     void delete(long id);
 }
