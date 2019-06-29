@@ -1,10 +1,14 @@
 package com.zapotylok.todolist.controller;
 
+import com.zapotylok.todolist.model.Task;
 import com.zapotylok.todolist.model.User;
 import com.zapotylok.todolist.service.SecurityService;
+import com.zapotylok.todolist.service.TaskService;
 import com.zapotylok.todolist.service.UserService;
+import com.zapotylok.todolist.validator.TaskValidator;
 import com.zapotylok.todolist.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,26 +34,45 @@ public class UserController {
     @Autowired
     private UserValidator userValidator;
 
-    @RequestMapping(value = "/registration", method = RequestMethod.GET)
+    @Autowired
+    private TaskService taskService;
+
+    @RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
+    public String index(Model model, String error, String logout) {
+        //form for registration
+        model.addAttribute("userForm", new User());
+
+        //
+        User user = userService.findByUsername(securityService.findLoggedInUsername());
+        if(user != null) {
+            List<Task> taskList = taskService.findByUserId(user.getId());
+            model.addAttribute("TASKS", taskList);
+            model.addAttribute("taskForm", new Task());
+        }
+
+        return "index";
+    }
+
+    /*@RequestMapping(value = "/#signup", method = RequestMethod.GET)
     public String registration(Model model) {
         model.addAttribute("userForm", new User());
 
-        return "registration";
-    }
+        return "index";
+    }*/
 
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model) {
         userValidator.validate(userForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return "registration";
+            return "index";
         }
 
         userService.save(userForm);
 
         securityService.autoLogin(userForm.getUsername(), userForm.getConfirmPassword());
 
-        return "redirect:/welcome";
+        return "redirect:/index";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -59,10 +82,11 @@ public class UserController {
         }
 
         if (logout != null) {
+            SecurityContextHolder.clearContext();
             model.addAttribute("message", "Logged out successfully.");
         }
 
-        return "login";
+        return "redirect:/index";
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)

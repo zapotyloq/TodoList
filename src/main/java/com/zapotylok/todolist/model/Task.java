@@ -1,5 +1,6 @@
 package com.zapotylok.todolist.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.util.Date;
@@ -39,6 +40,7 @@ public class Task {
     @Column(name = "status")
     private boolean status;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User user;

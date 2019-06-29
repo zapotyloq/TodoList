@@ -7,7 +7,7 @@ import com.zapotylok.todolist.service.SecurityService;
 import com.zapotylok.todolist.service.UserService;
 import com.zapotylok.todolist.validator.TaskValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,8 +17,6 @@ import org.springframework.web.bind.WebDataBinder;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-
 /**
  * Controller for {@link com.zapotylok.todolist.model.Task}'s pages.
  */
@@ -38,12 +36,12 @@ public class TaskController {
     @Autowired
     private TaskValidator taskValidator;
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/create", method = RequestMethod.GET)
     public String create(Model model) {
-        model.addAttribute("taskForm", new Task());
+
 
         return "create";
-    }
+    }*/
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -57,7 +55,7 @@ public class TaskController {
         taskValidator.validate(taskForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return "create";
+            return "index";
         }
 
         User user = userService.findByUsername(securityService.findLoggedInUsername());
@@ -65,21 +63,26 @@ public class TaskController {
         taskForm.setStatus(false);
         taskService.save(taskForm);
 
-        return "redirect:/welcome";
+        return "redirect:/index";
     }
 
-    @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
-    public String welcome(Model model) {
+    /*@RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
+    public String index(Model model) {
         User user = userService.findByUsername(securityService.findLoggedInUsername());
         List<Task> taskList = taskService.findByUserId(user.getId());
         model.addAttribute("TASKS", taskList);
-        return "welcome";
-    }
+        return "index";
+    }*/
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") int id) {
         taskService.delete(id);
-        return "redirect:/welcome";
+        return "redirect:/index";
+    }
+
+    @RequestMapping(value = "/get/{id}", method=RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody Task get(@PathVariable("id") int id){
+        return taskService.findById(id);
     }
 
     @RequestMapping(value = "/change_status/{id}", method = RequestMethod.GET)
@@ -87,6 +90,6 @@ public class TaskController {
         Task task = taskService.findById(id);
         task.setStatus(!task.isStatus());
         taskService.save(task);
-        return "redirect:/welcome";
+        return "redirect:/index";
     }
 }
